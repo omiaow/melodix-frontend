@@ -546,4 +546,35 @@ body {
 
 
 
+.wallet_window {
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
 
+.wallet_input {
+  padding: 8px;
+  font-size: 16px;
+  outline: none;
+  border: 1px solid #FFFFFF;
+  background-color: #171717;
+  border-right: none;
+  border-radius: 8px 0 0 8px;
+}
+
+.wallet_input:focus {
+  background-color: #FFFFFF;
+}
+
+.wallet_button {
+  padding: 8px 16px;
+  font-size: 16px;
+  cursor: pointer;
+  border: 1px solid #FFFFFF;
+  outline: none;
+  background-color: #171717;
+  color: #FFFFFF;
+  border-left: none;
+  border-radius: 0 8px 8px 0;
+}

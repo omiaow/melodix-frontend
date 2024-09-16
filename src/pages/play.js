@@ -3,7 +3,6 @@ import AuthContext from "../context/AuthContext";
 import useHttp from "../hooks/http.hook";
 import FarmingButton from "./components/button";
 
-
 import { useNavigate } from 'react-router-dom';
 
 function Play() {
@@ -17,6 +16,7 @@ function Play() {
     const { request } = useHttp();
 
     const navigate = useNavigate();
+    const [wallet, setWallet] = useState();
 
     const fetchBalance = async (id) => {
         const url = `https://rpc.qubic.org/v1/balances/${id}`;
@@ -61,6 +61,32 @@ function Play() {
         get()
     }, [auth, request]);
 
+    const submit = async () => {
+        try {
+            const url = `https://rpc.qubic.org/v1/balances/${wallet}`;
+            
+            const checkToken = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!checkToken.ok) {
+                throw new Error(`Error: ${checkToken.status}`);
+            }
+
+            const response = await request(`/user/wallet`, "POST", { wallet: wallet }, {
+                authorization: `Bearer ${auth.token}`
+            });
+            
+            if (response.status) {
+                window.location.reload();
+            }
+        } catch (error) {}
+    };
+
+
     return (
         <>
             <div className="window">
@@ -68,7 +94,25 @@ function Play() {
                 <h1 className="play_header">{user ? user.name : "Name"}</h1>
                 <h1 className="play_header" style={{ fontSize: "26px" }}>{user ? user.coins.toFixed(2) : "Coins"} {user ? user.currency : "Currency"}</h1>
             
-                <h1 className="play_header" style={{ fontSize: "26px" }}>{qubic ? qubic : "0"} QUBIC</h1>
+                {qubic ?
+                    <h1 className="play_header" style={{ fontSize: "26px" }}>{ qubic } QUBIC</h1> :
+                    (
+                        <div className="wallet_window">
+                            <input
+                                type="text"
+                                value={wallet}
+                                onChange={(e) => setWallet(e.target.value)}
+                                placeholder="Enter Qubic wallet"
+                                className="wallet_input"
+                            />
+                            <button
+                                type="submit"
+                                className="wallet_button"
+                                onClick={() => submit()}>
+                                Submit
+                            </button>
+                        </div>
+                )}
 
                 <div className="dj">
                     <div className="bottom">
