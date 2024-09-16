@@ -437,7 +437,7 @@ body {
   padding: 0 10px;
   color: black;
   margin: auto;
-  margin-top: -300px;
+  margin-top: calc(-100vh + 100px);
   margin-bottom: 18px;
   position: relative;
   z-index: 100;

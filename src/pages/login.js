@@ -72,7 +72,9 @@ function Login() {
 
     return (
         <>
-            <div className="window" style={{ height: "100vh" }}/>
+            <div className="window" style={{ height: "100vh" }}>
+                <h1 style={{ color: "white", marginTop: "40px" }}>Qubic</h1>
+            </div>
             <input 
                 type="text"
                 className="sticked_text_input"
