@@ -3,6 +3,9 @@ import AuthContext from "../context/AuthContext";
 import useHttp from "../hooks/http.hook";
 import FarmingButton from "./components/button";
 
+
+import { useNavigate } from 'react-router-dom';
+
 function Play() {
 
     const [farm, setFarm] = useState();
@@ -12,6 +15,8 @@ function Play() {
 
     const auth = useContext(AuthContext);
     const { request } = useHttp();
+
+    const navigate = useNavigate();
 
     const fetchBalance = async (id) => {
         const url = `https://rpc.qubic.org/v1/balances/${id}`;
@@ -71,7 +76,7 @@ function Play() {
                             <div className="name">Egyptian Spiderman</div>
                             <div className="autor">R. Bou</div>
                         </div>
-                        <span className="play">Play</span>
+                        <span className="play" onClick={() => navigate("/game")}>Play</span>
                     </div>
                 </div>
 
