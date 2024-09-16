@@ -431,6 +431,28 @@ body {
   text-align: left;
 }
 
+.sticked_text_input {
+  width: 330px;
+  height: 55px;
+  padding: 0 10px;
+  color: black;
+  margin: auto;
+  margin-top: -300px;
+  margin-bottom: 18px;
+  position: relative;
+  z-index: 100;
+  border-radius: 12px;
+  background-color: #F7F7F7;
+  
+  display: grid;
+  place-items: center;
+  font-family: Helvetica;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 13px;
+  letter-spacing: 0.05999999865889549px;
+}
+
 .sticked_button {
   width: 350px;
   height: 55px;

@@ -19,13 +19,13 @@ function Login() {
     const { request } = useHttp();
 
     const [token, setToken] = useState('');
-    const [button, setButton] = useState('Paste Qubic wallet');
 
-    const pasteFromClipboard = async () => {
+    const [button, setButton] = useState('Submit');
+    const [wallet, setWallet] = useState('');
+
+    const submit = async () => {
         try {
-            const text = await navigator.clipboard.readText();
-
-            const url = `https://rpc.qubic.org/v1/balances/${text}`;
+            const url = `https://rpc.qubic.org/v1/balances/${wallet}`;
             
             const checkToken = await fetch(url, {
                 method: 'GET',
@@ -38,7 +38,7 @@ function Login() {
                 throw new Error(`Error: ${checkToken.status}`);
             }
 
-            const response = await request(`/user/wallet`, "POST", { wallet: text }, {
+            const response = await request(`/user/wallet`, "POST", { wallet: wallet }, {
                 authorization: `Bearer ${token}`
             });
             
@@ -61,8 +61,9 @@ function Login() {
                 }
 
                 if (!response.user) {
+                    auth.login(response.token);
                     navigate("/");
-                } 
+                }
             } catch (e) {}
         }
 
@@ -72,10 +73,17 @@ function Login() {
     return (
         <>
             <div className="window" style={{ height: "100vh" }}/>
+            <input 
+                type="text"
+                className="sticked_text_input"
+                value={wallet} 
+                onChange={(e) => setWallet(e.target.value)} 
+                placeholder="Enter your Qubic wallet"
+            />
             <div
                 className="sticked_button"
-                style={{ marginTop: "-200px" }}
-                onClick={pasteFromClipboard}
+                style={{ marginTop: "20px" }}
+                onClick={submit}
                 >{button}</div>
         </>
     );
