@@ -13,6 +13,8 @@ function App() {
     return <></>;
   }
 
+  localStorage.clear();
+
   return (
     <div className="app">
       <AuthContext.Provider value={{ token, userId, login, logout, isAuthenticated }}>
