@@ -5,7 +5,7 @@ import useHttp from "../hooks/http.hook";
 
 function Tasks() {
 
-    const [tasks, setTasks] = useState([])
+    const [tasks, setTasks] = useState()
     const [completeds, setCompleteds] = useState([])
 
     const auth = useContext(AuthContext);
@@ -47,12 +47,18 @@ function Tasks() {
         } catch (e) {}
     }
 
+    const buttons = (type) => {
+        if (type.includes('subs')) return "Subscribe"
+
+        return "Begin"
+    }
+
     const renderTasks = (list) => {
         const result = [];
 
         list.forEach((element, i) => {
 
-            let button = <span className="button_active" onClick={() => onComplete(element._id)}>{element.type}</span>;
+            let button = <span className="button_active" onClick={() => onComplete(element._id)}>{buttons(element.type)}</span>;
 
             const isCompleted = completeds.find(item => item.taskId === element._id);
 
@@ -67,7 +73,7 @@ function Tasks() {
                 <div className="icon"></div>
                 <div className="description">
                     <p className="text">{element.description}</p>
-                    <p className="reward">+{element.reward} {element.currency}</p>
+                    <p className="reward">+{element.reward} MP</p>
                 </div>
                 {button}
             </div>)
@@ -81,7 +87,23 @@ function Tasks() {
             <h1 className="task_header">Tasks</h1>
             <p className="task_description">You'll earn points right away for completing each task</p>
 
-            {renderTasks(tasks)}
+            {tasks ? renderTasks(tasks) : <>
+                <div className="loading-item">
+                    <div className="name-placeholder"></div>
+                    <div className="description-placeholder"></div>
+                    <div className="shimmer"></div>
+                </div>
+                <div className="loading-item">
+                    <div className="name-placeholder"></div>
+                    <div className="description-placeholder"></div>
+                    <div className="shimmer"></div>
+                </div>
+                <div className="loading-item">
+                    <div className="name-placeholder"></div>
+                    <div className="description-placeholder"></div>
+                    <div className="shimmer"></div>
+                </div>
+            </>}
             
             <div style={{ width: "100%", height: "100px" }}></div>
         </div>

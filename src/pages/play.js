@@ -9,110 +9,54 @@ function Play() {
 
     const [farm, setFarm] = useState();
     const [user, setUser] = useState();
- 
-    const [qubic, setQubic] = useState();
 
     const auth = useContext(AuthContext);
     const { request } = useHttp();
 
     const navigate = useNavigate();
-    const [wallet, setWallet] = useState();
-
-    const fetchBalance = async (id) => {
-        const url = `https://rpc.qubic.org/v1/balances/${id}`;
-      
-        try {
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-        
-            if (!response.ok) {
-                throw new Error(`Error: ${response.status}`);
-            }
-        
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            console.error('Failed to fetch balance:', error);
-        }
-    };
 
     useEffect(() => {
         const get = async () => {  
             try {
-                const response = await request(`/user/farm`, "GET", null, {
+                const responseUser = await request(`/user`, "GET", null, {
                     authorization: `Bearer ${auth.token}`
                 });
                 
-                if (response.status) {
-                    setFarm(response.farm);
-                    setUser(response.user);
+                if (responseUser.status) {
+                    setUser(responseUser.user);
                 }
-
-                const balance = await fetchBalance(response.user.wallet)
-
-                setQubic(parseInt(balance.balance.balance).toFixed(2))
+                
+                const responseFarm = await request(`/user/farm`, "GET", null, {
+                    authorization: `Bearer ${auth.token}`
+                });
+                
+                if (responseFarm.status) {
+                    setFarm(responseFarm.farm);
+                }
             } catch (e) {}
         }
 
         get()
     }, [auth, request]);
 
-    const submit = async () => {
-        try {
-            const url = `https://rpc.qubic.org/v1/balances/${wallet}`;
-            
-            const checkToken = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            if (!checkToken.ok) {
-                throw new Error(`Error: ${checkToken.status}`);
-            }
-
-            const response = await request(`/user/wallet`, "POST", { wallet: wallet }, {
-                authorization: `Bearer ${auth.token}`
-            });
-            
-            if (response.status) {
-                window.location.reload();
-            }
-        } catch (error) {}
-    };
-
-
     return (
         <>
             <div className="window">
-                <div className="image"/>
-                <h1 className="play_header">{user ? user.name : "Name"}</h1>
-                <h1 className="play_header" style={{ fontSize: "26px" }}>{user ? user.coins.toFixed(2) : "Coins"} {user ? user.currency : "Currency"}</h1>
+                {(user) ? <div className="image" style={{ background: user.photoUrl ? `url(${user.photoUrl})` : "" }}/> :
+                    <div className="loader"/>}
             
-                {qubic ?
-                    <h1 className="play_header" style={{ fontSize: "26px" }}>{ qubic } QUBIC</h1> :
-                    (
-                        <div className="wallet_window">
-                            <input
-                                type="text"
-                                value={wallet}
-                                onChange={(e) => setWallet(e.target.value)}
-                                placeholder="Enter Qubic wallet"
-                                className="wallet_input"
-                            />
-                            <button
-                                type="submit"
-                                className="wallet_button"
-                                onClick={() => submit()}>
-                                Submit
-                            </button>
-                        </div>
-                )}
+                {user ? <>
+                    <h1 className="play_header">{user ? user.name : "Name"}</h1>
+                    <h1 className="play_header" style={{ fontSize: "26px" }}>{user ? user.coins.toFixed(2) : "Coins"} {user ? user.currency : "Currency"}</h1>
+                </> : <>
+                    <div className="loading-text" style={{ marginTop: "25px" }}>
+                        <div className="shimmer"/>
+                    </div>
+                    <div className="loading-text" style={{ marginTop: "25px", height: "20px" }}>
+                        <div className="shimmer"/>
+                    </div>
+                </>}
+                
 
                 <div className="dj">
                     <div className="bottom">
@@ -126,7 +70,13 @@ function Play() {
 
                 <div style={{ width: "100%", height: "100px" }}></div>
             </div>
-            {farm ? <FarmingButton lastUpdateTime={farm.updateTime} setFarm={setFarm} /> : <></>}
+            {farm ? <>
+                <FarmingButton lastUpdateTime={farm.updateTime} setFarm={setFarm} />
+            </> : <>
+                <div className="sticked_button" style={{ backgroundColor: "#212121" }}>
+                    <div className="shimmer"/>
+                </div>
+            </>}
         </>
     );
 }

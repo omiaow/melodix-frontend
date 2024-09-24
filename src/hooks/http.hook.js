@@ -20,6 +20,7 @@ const useHttp = () => {
       const response = await fetch(`${process.env.REACT_APP_SERVER}${url}`, { method, body, headers });
       const data = await response.json();
 
+      console.log(data)
       setLoading(false);
 
       if (!response.ok) {

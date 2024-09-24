@@ -9,7 +9,7 @@ function Login() {
     const queryParams = new URLSearchParams(location.search);
 
     const invitedBy = queryParams.get('invitedBy');
-    const userId = queryParams.get('userId');
+    const tgUserId = queryParams.get('tgUserId');
     const name = queryParams.get('name');
     const username = queryParams.get('username');
     const isBot = queryParams.get('isBot');
@@ -20,9 +20,9 @@ function Login() {
 
 
     useEffect(() => {
-        const login = async () => {  
+        const login = async () => {
             try {
-                const response = await request(`/user/login`, "POST", { invitedBy, userId, name, username, isBot, language });
+                const response = await request(`/user/login`, "POST", { invitedBy, tgUserId, name, username, isBot, language });
                 
                 if (response.status) {
                     auth.login(response.token);
@@ -32,7 +32,7 @@ function Login() {
         }
 
         login()
-    }, [auth, invitedBy, userId, name, username, isBot, language, navigate, request])
+    }, [auth, invitedBy, tgUserId, name, username, isBot, language, navigate, request])
 
     return (
         <></>

@@ -1,13 +1,8 @@
 import React, { useEffect, useRef, useState, useContext } from "react";
 import Phaser from "phaser";
 import * as Tone from "tone";
-import musicMp from "./1.mp3";
 import tileSoundMp from "./2.mp3";
 import car1 from "./1.png";
-
-import { useNavigate } from 'react-router-dom';
-import AuthContext from "../context/AuthContext";
-import useHttp from "../hooks/http.hook";
 
 const MusicTilesGame = () => {
   const gameRef = useRef(null);
@@ -49,9 +44,6 @@ const MusicTilesGame = () => {
     const bass = new Tone.MonoSynth().toDestination();
     const snare = new Tone.NoiseSynth().toDestination();
 
-    // const tileSound = new Tone.Player(tileSoundMp).toDestination();
-    // tileSound.volume.value = -10;
-
     const melody = [
       { note: "E4", instrument: "synth", time: 0 },
       { note: "D4", instrument: "synth", time: "0:1" },
@@ -78,20 +70,19 @@ const MusicTilesGame = () => {
       if (gameRef.current) {
         gameRef.current.destroy(true);
       }
-      backgroundMusic.stop(); // Останавливаем музыку
-      Tone.Transport.stop(); // Останавливаем транспорт
+      backgroundMusic.stop();
+      Tone.Transport.stop();
     };
 
     Tone.loaded().then(() => {
       Tone.Transport.start();
       backgroundMusic.start();
 
-      // Останавливаем игру и музыку через 60 секунд
       setTimeout(() => {
-        backgroundMusic.stop(); // Останавливаем музыку
-        Tone.Transport.stop(); // Останавливаем транспорт
-        stopGame(); // Завершаем игру
-      }, 60000); // 60 секунд
+        backgroundMusic.stop();
+        Tone.Transport.stop();
+        stopGame();
+      }, 60000);
     });
 
     const tempo = Tone.Transport.bpm.value;
@@ -141,7 +132,6 @@ const MusicTilesGame = () => {
 
       tiles = this.physics.add.group();
 
-      // Создание зон для нажатий
       hitZones = this.add.group();
       tileLines.forEach((xPos) => {
         const zone = this.add.rectangle(
@@ -191,7 +181,6 @@ const MusicTilesGame = () => {
         });
 
         if (clickedZone) {
-          // playTileSound();
           setScore((prevScore) => prevScore + 10);
           tile.destroy();
           activeTiles--;
@@ -217,12 +206,8 @@ const MusicTilesGame = () => {
         }
       });
 
-      tileSpeed += 0.001; // Постепенное увеличение скорости
+      tileSpeed += 0.001;
     }
-
-    // function playTileSound() {
-    //   tileSound.start();
-    // }
 
     return () => {
       if (gameRef.current) {
@@ -237,22 +222,6 @@ const MusicTilesGame = () => {
     setIsGameStarted(true);
     setIsGameFinished(false);
   };
-
-
-  const navigate = useNavigate();
-
-  const auth = useContext(AuthContext);
-  const { request } = useHttp();
-  
-  const setPoints = async () => {
-    const response = await request(`/user/points`, "PUT", { points: score }, {
-      authorization: `Bearer ${auth.token}`
-    });
-    
-    if (response.status) {
-      navigate("/");
-    }
-  }
 
   return (
     <div className="game-parent">
@@ -278,7 +247,6 @@ const MusicTilesGame = () => {
           <h3>Game over!</h3>
           <a onClick={() => {
             setIsGameStarted(false)
-            setPoints()
             }}>Exit Now</a>
         </div>
       )}

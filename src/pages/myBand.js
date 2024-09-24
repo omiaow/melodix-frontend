@@ -7,21 +7,28 @@ function App() {
   const [buttonLabel, setButtonLabel] = useState("Invite Frens");
 
   const [user, setUser] = useState();
-  const [friends, setFriends] = useState([]);
+  const [friends, setFriends] = useState();
 
   const auth = useContext(AuthContext);
   const { request } = useHttp();
 
   useEffect(() => {
-      const get = async () => {  
+      const get = async () => {
           try {
+            const responseUser = await request(`/user`, "GET", null, {
+              authorization: `Bearer ${auth.token}`
+            });
+            
+            if (responseUser.status) {
+              setUser(responseUser.user);
+            }
+
             const responseFriends = await request(`/user/friends`, "GET", null, {
               authorization: `Bearer ${auth.token}`
             });
             
             if (responseFriends.status) {
               setFriends(responseFriends.friends);
-              setUser(responseFriends.user);
             }
           } catch (e) {}
       }
@@ -64,11 +71,30 @@ function App() {
     <>
       <div className="window">
         <h1 className="band_header">Invite Frens</h1>
-        <div className="monitor">{user ? user.coinsByFriends.toFixed(2) : 0} {user ? user.currency : "MP"} Earned</div>
+        <div className="monitor">{user ?
+          `${user.coinsByFriends.toFixed(2)} MP Earned` :
+          <div className="loader-small" style={{ marginTop: "50px" }}/>
+        }</div>
         <p className="percent_description">Score 10% from buddies + 2.5% from their referrals</p>
-        <h2 className="list_header">{friends.length} frens</h2>
+        <h2 className="list_header">{friends ? `${friends.length} frens` : ""}</h2>
 
-        { renderFriends(friends) }
+        { friends ? renderFriends(friends) : <>
+          <div className="loading-item">
+            <div className="name-placeholder"></div>
+            <div className="description-placeholder"></div>
+            <div className="shimmer"></div>
+          </div>
+          <div className="loading-item">
+            <div className="name-placeholder"></div>
+            <div className="description-placeholder"></div>
+            <div className="shimmer"></div>
+          </div>
+          <div className="loading-item">
+            <div className="name-placeholder"></div>
+            <div className="description-placeholder"></div>
+            <div className="shimmer"></div>
+          </div>
+        </> }
 
         <div style={{ width: "100%", height: "100px" }}></div>
       </div>

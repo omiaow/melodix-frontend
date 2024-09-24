@@ -3,7 +3,7 @@ import AuthContext from "../../context/AuthContext";
 import useHttp from "../../hooks/http.hook";
 
 const FarmingButton = ({ lastUpdateTime, setFarm }) => {
-  const [timeLeft, setTimeLeft] = useState(8 * 60 * 60 * 1000); // 8 hours in milliseconds
+  const [timeLeft, setTimeLeft] = useState(8 * 60 * 60 * 1000);
   const [isButtonActive, setIsButtonActive] = useState(false);
 
   useEffect(() => {
@@ -12,17 +12,17 @@ const FarmingButton = ({ lastUpdateTime, setFarm }) => {
       const now = new Date();
 
       const elapsedTime = now - lastUpdate;
-      const timeRemaining = Math.max(8 * 60 * 60 * 1000 - elapsedTime, 0); // 8 hours in milliseconds
+      const timeRemaining = Math.max(8 * 60 * 60 * 1000 - elapsedTime, 0);
       
       setTimeLeft(timeRemaining);
       setIsButtonActive(timeRemaining === 0);
     };
 
-    updateTimer(); // Initial call to set the state based on the initial render
+    updateTimer();
 
-    const intervalId = setInterval(updateTimer, 1000); // Update every second
+    const intervalId = setInterval(updateTimer, 1000);
 
-    return () => clearInterval(intervalId); // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
   }, [lastUpdateTime]);
 
   const hours = Math.floor((timeLeft / (1000 * 60 * 60)) % 24);
@@ -34,18 +34,22 @@ const FarmingButton = ({ lastUpdateTime, setFarm }) => {
   const { request } = useHttp();
 
   const update = async () => {
-    const response = await request(`/user/farm`, "PUT", null, {
+    await request(`/user/farm`, "PUT", null, {
+      authorization: `Bearer ${auth.token}`
+    });
+                
+    const responseFarm = await request(`/user/farm`, "GET", null, {
       authorization: `Bearer ${auth.token}`
     });
     
-    if (response.status) {
-      setFarm(response.farm);
+    if (responseFarm.status) {
+      setFarm(responseFarm.farm);
     }
   }
 
 
   return (
-    <div 
+    <div
       className="sticked_button"
       style={{ overflow: 'hidden' }}
       disabled={!isButtonActive}
