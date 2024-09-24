@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AuthContext from "../context/AuthContext";
 import useHttp from "../hooks/http.hook";
@@ -14,6 +14,7 @@ function Login() {
     const username = queryParams.get('username');
     const isBot = queryParams.get('isBot');
     const language = queryParams.get('language');
+    const photoUrl = queryParams.get('photoUrl');
 
     const auth = useContext(AuthContext);
     const { request } = useHttp();
@@ -22,7 +23,7 @@ function Login() {
     useEffect(() => {
         const login = async () => {
             try {
-                const response = await request(`/user/login`, "POST", { invitedBy, tgUserId, name, username, isBot, language });
+                const response = await request(`/user/login`, "POST", { invitedBy, tgUserId, name, username, isBot, language, photoUrl });
                 
                 if (response.status) {
                     auth.login(response.token);
@@ -32,7 +33,7 @@ function Login() {
         }
 
         login()
-    }, [auth, invitedBy, tgUserId, name, username, isBot, language, navigate, request])
+    }, [auth, invitedBy, tgUserId, name, username, isBot, language, photoUrl, navigate, request])
 
     return (
         <></>
