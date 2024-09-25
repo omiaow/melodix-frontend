@@ -590,6 +590,8 @@ body {
   margin: 13px;
   border-radius: 20px;
   background-color: black;
+  background-repeat: no-repeat;
+  background-size: 100%;
 }
 
 .window .friends .description {

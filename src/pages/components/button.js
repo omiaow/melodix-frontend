@@ -34,16 +34,20 @@ const FarmingButton = ({ lastUpdateTime, setFarm }) => {
   const { request } = useHttp();
 
   const update = async () => {
-    await request(`/user/farm`, "PUT", null, {
-      authorization: `Bearer ${auth.token}`
-    });
-                
-    const responseFarm = await request(`/user/farm`, "GET", null, {
-      authorization: `Bearer ${auth.token}`
-    });
-    
-    if (responseFarm.status) {
-      setFarm(responseFarm.farm);
+    if (isButtonActive) {
+      setFarm(null)
+
+      await request(`/user/farm`, "PUT", null, {
+        authorization: `Bearer ${auth.token}`
+      });
+                  
+      const responseFarm = await request(`/user/farm`, "GET", null, {
+        authorization: `Bearer ${auth.token}`
+      });
+      
+      if (responseFarm.status) {
+        setFarm(responseFarm.farm);
+      }
     }
   }
 
