@@ -11,6 +11,7 @@ function Login() {
 
     const auth = useContext(AuthContext);
 
+    auth.logout();
     auth.login(token);
     navigate("/");
 
